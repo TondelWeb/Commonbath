@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CommonBath — Ritual Bathing, Elevated</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f5f0e8;
+      --warm-white: #faf8f3;
+      --stone: #c8b89a;
+      --terracotta: #c4714a;
+      --deep: #1a1612;
+      --charcoal: #2d2520;
+      --mist: #e8e0d4;
+      --gold: #b8935a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--warm-white);
+      color: var(--deep);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--terracotta);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid var(--terracotta);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.25s ease;
+      opacity: 0.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 4rem;
+      mix-blend-mode: normal;
+    }
+    nav.light { color: var(--deep); }
+    nav.dark { color: var(--cream); }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: inherit;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: inherit;
+      opacity: 0.75;
+      transition: opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; }
+    .nav-cart {
+      font-size: 0.8rem; letter-spacing: 0.15em;
+      text-transform: uppercase; text-decoration: none;
+      color: inherit; opacity: 0.75; transition: opacity 0.2s;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .nav-cart:hover { opacity: 1; }
+
+    /* HERO */
+    .hero {
+      height: 100vh;
+      background: var(--cream);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left {
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 0 4rem 0 4rem;
+      padding-top: 6rem;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 6vw, 7rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      color: var(--deep);
+      opacity: 0;
+      animation: fadeUp 0.9s 0.5s forwards;
+    }
+    .hero-title em { font-style: italic; color: var(--terracotta); }
+    .hero-body {
+      margin-top: 2.5rem;
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--charcoal);
+      max-width: 380px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.7s forwards;
+    }
+    .hero-actions {
+      margin-top: 3rem;
+      display: flex; gap: 1.5rem; align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.9s forwards;
+    }
+    .btn-primary {
+      background: var(--terracotta);
+      color: #fff;
+      border: none;
+      padding: 1rem 2.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: none;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--charcoal); transform: translateY(-2px); }
+    .btn-text {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: var(--deep);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-text:hover { opacity: 1; }
+
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-img-wrap {
+      position: absolute; inset: 0;
+      opacity: 0;
+      animation: fadeIn 1.2s 0.4s forwards;
+    }
+    .hero-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(120deg, var(--cream) 0%, transparent 35%);
+    }
+    .hero-visual {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      background: linear-gradient(160deg, #e8ddd0 0%, #d4c4b0 40%, #c4a882 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* Decorative bath illustration placeholder */
+    .bath-illustration {
+      width: 100%; height: 100%;
+      background:
+        radial-gradient(ellipse at 60% 40%, #e2c9a8 0%, transparent 55%),
+        radial-gradient(ellipse at 30% 70%, #c4a882 0%, transparent 45%),
+        linear-gradient(180deg, #d4c4b0 0%, #b89870 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .bath-illustration::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px; height: 220px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: inset 0 20px 60px rgba(255,255,255,0.2), 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .bath-illustration::after {
+      content: '';
+      position: absolute;
+      top: calc(50% - 30px); left: 50%;
+      transform: translateX(-50%);
+      width: 290px; height: 20px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      border-radius: 50%;
+      filter: blur(4px);
+    }
+    /* floating bubbles */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.4);
+      animation: float var(--dur) ease-in-out infinite;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 3rem; left: 4rem;
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--charcoal); opacity: 0.5;
+    }
+    .scroll-line {
+      width: 40px; height: 1px;
+      background: var(--charcoal);
+      transform-origin: left;
+      animation: scrollLine 2s 1.5s ease forwards;
+      transform: scaleX(0);
+    }
+
+    /* MARQUEE */
+    .marquee-bar {
+      background: var(--deep);
+      color: var(--cream);
+      padding: 1rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .marquee-track {
+      display: inline-flex;
+      animation: marquee 20s linear infinite;
+    }
+    .marquee-item {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      margin: 0 3rem;
+      opacity: 0.7;
+    }
+    .marquee-dot {
+      color: var(--terracotta);
+      margin: 0 1rem;
+    }
+
+    /* PHILOSOPHY — DARK SECTION */
+    .philosophy {
+      background: var(--deep);
+      color: var(--cream);
+      padding: 10rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .philosophy::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(196,113,74,0.12) 0%, transparent 70%);
+    }
+    .philosophy-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-bottom: 2rem;
+    }
+    .philosophy-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 4vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+    }
+    .philosophy-title em { font-style: italic; color: var(--terracotta); }
+    .philosophy-right { opacity: 0.85; }
+    .philosophy-body {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      color: #c8bfb3;
+    }
+    .philosophy-stat {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem; margin-top: 3rem;
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: var(--terracotta);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      color: var(--stone);
+      margin-top: 0.3rem;
+      text-transform: uppercase;
+    }
+
+    /* PRODUCTS */
+    .products {
+      background: var(--warm-white);
+      padding: 8rem 4rem;
+    }
+    .section-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 5rem;
+    }
+    .section-label {
+      font-size: 0.7rem; letter-spacing: 0.35em;
+      text-transform: uppercase; color: var(--terracotta);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 3.5vw, 3.5rem);
+      font-weight: 300; line-height: 1.1;
+    }
+    .section-title em { font-style: italic; }
+    .view-all {
+      font-size: 0.78rem; letter-spacing: 0.15em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--deep); opacity: 0.5;
+      transition: opacity 0.2s;
+      display: flex; align-items: center; gap: 0.5rem;
+      white-space: nowrap; padding-bottom: 0.5rem;
+    }
+    .view-all:hover { opacity: 1; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+    .product-card {
+      cursor: none;
+      group: true;
+    }
+    .product-img {
+      aspect-ratio: 3/4;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .product-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .product-card:hover .product-bg { transform: scale(1.05); }
+    .product-bg-1 { background: linear-gradient(160deg, #e8d5c4 0%, #c4a882 100%); }
+    .product-bg-2 { background: linear-gradient(160deg, #d4dde8 0%, #8fa3b8 100%); }
+    .product-bg-3 { background: linear-gradient(160deg, #e8e4d4 0%, #c8c0a0 100%); }
+    .product-bg-4 { background: linear-gradient(160deg, #e8d4d4 0%, #c49898 100%); }
+
+    /* product visual elements */
+    .product-visual {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .prod-circle {
+      width: 100px; height: 140px;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.3);
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: inset 0 10px 30px rgba(255,255,255,0.3), 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .prod-bar {
+      width: 60px; height: 100px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: inset 0 8px 24px rgba(255,255,255,0.25), 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .prod-round {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .prod-bottle {
+      width: 50px; height: 120px;
+      border-radius: 25px 25px 10px 10px;
+      background: rgba(255,255,255,0.3);
+      border: 1px solid rgba(255,255,255,0.5);
+      position: relative;
+    }
+    .prod-bottle::before {
+      content: '';
+      position: absolute;
+      top: -20px; left: 50%; transform: translateX(-50%);
+      width: 20px; height: 20px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.4);
+    }
+
+    .product-tag {
+      position: absolute; top: 1rem; left: 1rem;
+      font-size: 0.65rem; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: var(--deep); color: var(--cream);
+      padding: 0.3rem 0.7rem;
+    }
+    .product-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem; font-weight: 400;
+      margin-bottom: 0.3rem;
+    }
+    .product-sub {
+      font-size: 0.78rem; color: #888; margin-bottom: 0.7rem;
+    }
+    .product-price {
+      font-size: 0.95rem; font-weight: 500;
+      color: var(--terracotta);
+    }
+    .product-add {
+      margin-top: 1rem;
+      font-size: 0.72rem; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--deep);
+      background: none; border: none; border-bottom: 1px solid var(--deep);
+      padding-bottom: 0.2rem;
+      cursor: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .product-card:hover .product-add { opacity: 0.6; }
+
+    /* RITUAL — DARK SECTION */
+    .ritual {
+      background: var(--charcoal);
+      color: var(--cream);
+      padding: 10rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .ritual::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(196,113,74,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(184,147,90,0.06) 0%, transparent 50%);
+    }
+    .ritual-inner {
+      max-width: 1200px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .ritual-header {
+      text-align: center; margin-bottom: 6rem;
+    }
+    .ritual-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 5vw, 6rem);
+      font-weight: 300; line-height: 1;
+    }
+    .ritual-title em { font-style: italic; color: var(--terracotta); }
+    .ritual-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 4rem;
+    }
+    .ritual-step {
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 2rem;
+    }
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem; font-weight: 300;
+      color: var(--terracotta); opacity: 0.4;
+      line-height: 1; margin-bottom: 1.5rem;
+    }
+    .step-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem; font-weight: 400;
+      margin-bottom: 1rem;
+    }
+    .step-body {
+      font-size: 0.9rem; line-height: 1.8;
+      color: #9a9088; font-weight: 300;
+    }
+
+    /* INGREDIENTS */
+    .ingredients {
+      background: var(--mist);
+      padding: 8rem 4rem;
+    }
+    .ingr-grid {
+      display: grid; grid-template-columns: 1fr 1.2fr;
+      gap: 6rem; align-items: center;
+    }
+    .ingr-visual {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #e8d5b0, #c4a870 60%, #a07840);
+      position: relative;
+      overflow: hidden;
+    }
+    .ingr-visual::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 60% 65%, rgba(255,255,255,0.2) 0%, transparent 50%);
+    }
+    .ingr-list { list-style: none; margin-top: 2rem; }
+    .ingr-item {
+      display: flex; align-items: center; gap: 1.5rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .ingr-item:last-child { border-bottom: none; }
+    .ingr-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--cream); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+    .ingr-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; font-weight: 400;
+    }
+    .ingr-desc { font-size: 0.82rem; color: #888; margin-top: 0.2rem; }
+
+    /* TESTIMONIALS — DARK */
+    .testimonials {
+      background: var(--deep);
+      color: var(--cream);
+      padding: 8rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .testimonials::after {
+      content: '"';
+      position: absolute; top: -2rem; left: 4rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30rem; font-weight: 300;
+      color: rgba(255,255,255,0.02);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .testi-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 3rem; margin-top: 4rem;
+    }
+    .testi-card {
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 2.5rem;
+      transition: border-color 0.3s;
+    }
+    .testi-card:hover { border-color: rgba(196,113,74,0.4); }
+    .testi-stars { color: var(--gold); margin-bottom: 1.5rem; font-size: 0.9rem; }
+    .testi-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; font-style: italic;
+      line-height: 1.7; color: #c8bfb3;
+      margin-bottom: 2rem;
+    }
+    .testi-name { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .testi-loc { font-size: 0.72rem; color: var(--stone); margin-top: 0.2rem; }
+
+    /* CTA */
+    .cta-section {
+      background: var(--cream);
+      padding: 10rem 4rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(196,113,74,0.08) 0%, transparent 70%);
+    }
+    .cta-eyebrow {
+      font-size: 0.72rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--terracotta);
+      margin-bottom: 2rem;
+    }
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 6vw, 6.5rem);
+      font-weight: 300; line-height: 0.95;
+      max-width: 700px; margin: 0 auto 3rem;
+    }
+    .cta-title em { font-style: italic; color: var(--terracotta); }
+    .cta-form {
+      display: flex; max-width: 440px; margin: 0 auto;
+      border-bottom: 1px solid var(--deep);
+    }
+    .cta-input {
+      flex: 1; background: none; border: none; outline: none;
+      padding: 1rem 0; font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; color: var(--deep);
+    }
+    .cta-input::placeholder { color: var(--stone); }
+    .cta-submit {
+      background: none; border: none; cursor: none;
+      font-size: 0.75rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--terracotta);
+      padding-left: 1.5rem;
+      transition: opacity 0.2s;
+    }
+    .cta-submit:hover { opacity: 0.7; }
+
+    /* FOOTER */
+    footer {
+      background: var(--charcoal);
+      color: var(--cream);
+      padding: 5rem 4rem 3rem;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 4rem; padding-bottom: 4rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem; font-weight: 300;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .footer-tagline { font-size: 0.85rem; color: #7a706a; line-height: 1.7; max-width: 250px; }
+    .footer-col-title {
+      font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--stone); margin-bottom: 1.5rem;
+    }
+    .footer-links { list-style: none; }
+    .footer-links li + li { margin-top: 0.8rem; }
+    .footer-links a {
+      font-size: 0.85rem; color: #8a807a;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--cream); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 2rem;
+    }
+    .footer-copy { font-size: 0.75rem; color: #5a504a; }
+    .footer-socials { display: flex; gap: 1.5rem; }
+    .footer-socials a { font-size: 0.75rem; letter-spacing: 0.1em; color: #5a504a; text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+    .footer-socials a:hover { color: var(--cream); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes scrollLine {
+      to { transform: scaleX(1); }
+    }
+
+    /* SCROLL ANIMATIONS */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 2rem; }
+      nav .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 0 2rem; padding-top: 8rem; }
+      .philosophy, .ingr-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .ingr-visual { max-width: 320px; margin: 0 auto; }
+      .product-grid { grid-template-columns: 1fr 1fr; }
+      .ritual-steps, .testi-grid { grid-template-columns: 1fr; }
+      .products, .ritual, .ingredients, .testimonials, .cta-section { padding: 5rem 2rem; }
+      .philosophy { padding: 5rem 2rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      footer { padding: 4rem 2rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav id="mainNav" class="light">
+    <a href="#" class="nav-logo">CommonBath</a>
+    <ul class="nav-links">
+      <li><a href="#">Shop</a></li>
+      <li><a href="#">Collections</a></li>
+      <li><a href="#">Rituals</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <a href="#" class="nav-cart">Cart &#8202;(0)</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">New Season Collection</p>
+      <h1 class="hero-title">The Art of <em>Bathing</em> Begins Here</h1>
+      <p class="hero-body">Handcrafted bath products made with botanical ingredients. Turn your daily ritual into a moment of pure indulgence.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary">Shop Collection</a>
+        <a href="#" class="btn-text">Our Story →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-img-wrap">
+        <div class="bath-illustration">
+          <div class="bubble" style="--dur:3.5s; width:18px;height:18px; top:20%;left:45%;"></div>
+          <div class="bubble" style="--dur:4.2s; width:12px;height:12px; top:30%;left:60%;"></div>
+          <div class="bubble" style="--dur:3s; width:24px;height:24px; top:15%;left:55%;"></div>
+          <div class="bubble" style="--dur:5s; width:10px;height:10px; top:40%;left:40%;"></div>
+          <div class="bubble" style="--dur:4s; width:16px;height:16px; top:25%;left:70%;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <span class="marquee-item">Pure Botanicals</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Handcrafted in Small Batches</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Cruelty Free</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Naturally Sourced</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Vegan Formulas</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Sustainable Packaging</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Pure Botanicals</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Handcrafted in Small Batches</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Cruelty Free</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Naturally Sourced</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Vegan Formulas</span><span class="marquee-dot">✦</span>
+      <span class="marquee-item">Sustainable Packaging</span><span class="marquee-dot">✦</span>
+    </div>
+  </div>
+
+  <!-- PHILOSOPHY — DARK -->
+  <section class="philosophy">
+    <div class="reveal">
+      <p class="philosophy-label">Our Philosophy</p>
+      <h2 class="philosophy-title">Bath as a <em>Sacred</em> Ritual</h2>
+    </div>
+    <div class="philosophy-right reveal">
+      <p class="philosophy-body">We believe the bath is one of life's most underrated luxuries. CommonBath was built on the idea that everyone deserves a moment of stillness — wrapped in warmth, scent, and care.</p>
+      <p class="philosophy-body">Each product is carefully formulated with ethically sourced botanicals, free from harsh synthetics and unnecessary additives.</p>
+      <div class="philosophy-stat">
+        <div>
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Natural Ingredients</div>
+        </div>
+        <div>
+          <div class="stat-num">48+</div>
+          <div class="stat-label">Botanical Blends</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="products">
+    <div class="section-header reveal">
+      <div>
+        <p class="section-label">Featured Products</p>
+        <h2 class="section-title">Curated <em>Essentials</em></h2>
+      </div>
+      <a href="#" class="view-all">View All →</a>
+    </div>
+    <div class="product-grid">
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="product-bg product-bg-1">
+            <div class="product-visual"><div class="prod-circle"></div></div>
+          </div>
+          <span class="product-tag">Bestseller</span>
+        </div>
+        <div class="product-name">Honey & Oat Bath Soak</div>
+        <div class="product-sub">For sensitive skin</div>
+        <div class="product-price">$28.00</div>
+        <button class="product-add">Add to Cart</button>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="product-bg product-bg-2">
+            <div class="product-visual"><div class="prod-bar"></div></div>
+          </div>
+          <span class="product-tag">New</span>
+        </div>
+        <div class="product-name">Sea Mineral Cleansing Bar</div>
+        <div class="product-sub">Deep cleanse + hydration</div>
+        <div class="product-price">$18.00</div>
+        <button class="product-add">Add to Cart</button>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="product-bg product-bg-3">
+            <div class="product-visual"><div class="prod-round"></div></div>
+          </div>
+        </div>
+        <div class="product-name">Lavender Dream Bomb</div>
+        <div class="product-sub">Calming aromatherapy</div>
+        <div class="product-price">$12.00</div>
+        <button class="product-add">Add to Cart</button>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-img">
+          <div class="product-bg product-bg-4">
+            <div class="product-visual"><div class="prod-bottle"></div></div>
+          </div>
+          <span class="product-tag">Limited</span>
+        </div>
+        <div class="product-name">Rose & Argan Body Oil</div>
+        <div class="product-sub">Nourishing post-bath ritual</div>
+        <div class="product-price">$42.00</div>
+        <button class="product-add">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RITUAL — DARK -->
+  <section class="ritual">
+    <div class="ritual-inner">
+      <div class="ritual-header reveal">
+        <h2 class="ritual-title">The CommonBath <em>Ritual</em></h2>
+      </div>
+      <div class="ritual-steps">
+        <div class="ritual-step reveal">
+          <div class="step-num">01</div>
+          <div class="step-title">Draw & Prepare</div>
+          <p class="step-body">Begin with warm water and a generous pour of your chosen bath soak. Let the salts dissolve, releasing essential oils and mineral goodness into the water.</p>
+        </div>
+        <div class="ritual-step reveal">
+          <div class="step-num">02</div>
+          <div class="step-title">Soak & Breathe</div>
+          <p class="step-body">Immerse yourself and breathe deeply. Allow the botanical aromas to calm the nervous system while the minerals penetrate the skin and restore balance.</p>
+        </div>
+        <div class="ritual-step reveal">
+          <div class="step-num">03</div>
+          <div class="step-title">Nourish & Restore</div>
+          <p class="step-body">After your soak, seal in hydration with our body oil or butter. Skin is at its most receptive immediately after bathing — this is your window.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INGREDIENTS -->
+  <section class="ingredients">
+    <div class="ingr-grid">
+      <div class="reveal">
+        <div class="ingr-visual"></div>
+      </div>
+      <div class="reveal">
+        <p class="section-label">Clean Formulas</p>
+        <h2 class="section-title">Ingredients You Can <em>Trust</em></h2>
+        <ul class="ingr-list">
+          <li class="ingr-item">
+            <div class="ingr-icon">🌿</div>
+            <div>
+              <div class="ingr-name">Organic Lavender</div>
+              <div class="ingr-desc">Calming, anti-inflammatory, sleep-inducing aroma</div>
+            </div>
+          </li>
+          <li class="ingr-item">
+            <div class="ingr-icon">🌹</div>
+            <div>
+              <div class="ingr-name">Moroccan Rose</div>
+              <div class="ingr-desc">Antioxidant-rich, skin-brightening, deeply hydrating</div>
+            </div>
+          </li>
+          <li class="ingr-item">
+            <div class="ingr-icon">🍯</div>
+            <div>
+              <div class="ingr-name">Raw Honey & Oat</div>
+              <div class="ingr-desc">Gentle exfoliation, soothes sensitive and dry skin</div>
+            </div>
+          </li>
+          <li class="ingr-item">
+            <div class="ingr-icon">🌊</div>
+            <div>
+              <div class="ingr-name">Dead Sea Minerals</div>
+              <div class="ingr-desc">Detoxifying magnesium blend, muscle relief</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS — DARK -->
+  <section class="testimonials">
+    <div class="reveal">
+      <p class="section-label" style="color:var(--stone)">What People Say</p>
+      <h2 class="section-title" style="color:var(--cream); font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,3.5vw,3.5rem); font-weight:300;">Loved by <em style="font-style:italic; color:var(--terracotta)">thousands</em></h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I've tried every bath brand out there. Nothing comes close to the way CommonBath makes my skin feel. It's become my Sunday evening religion."</p>
+        <div class="testi-name">Amara J.</div>
+        <div class="testi-loc">New York, NY</div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The lavender bath bomb genuinely helps me unwind after long work weeks. The scent lingers for hours. Worth every penny."</p>
+        <div class="testi-name">Priya M.</div>
+        <div class="testi-loc">London, UK</div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Clean ingredients, luxurious feel, beautiful packaging. I gifted the starter set to three friends and they all came back wanting more."</p>
+        <div class="testi-name">Sofia R.</div>
+        <div class="testi-loc">Austin, TX</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <p class="cta-eyebrow reveal">Join the Community</p>
+    <h2 class="cta-title reveal">Begin Your <em>Ritual</em> Today</h2>
+    <div class="cta-form reveal">
+      <input class="cta-input" type="email" placeholder="Enter your email for 15% off your first order"/>
+      <button class="cta-submit">Subscribe</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">CommonBath</div>
+        <p class="footer-tagline">Ritual bathing products made with botanical ingredients. For those who believe the bath is sacred.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Shop</div>
+        <ul class="footer-links">
+          <li><a href="#">Bath Soaks</a></li>
+          <li><a href="#">Bath Bombs</a></li>
+          <li><a href="#">Body Oils</a></li>
+          <li><a href="#">Cleansing Bars</a></li>
+          <li><a href="#">Gift Sets</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Learn</div>
+        <ul class="footer-links">
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Ingredients</a></li>
+          <li><a href="#">Rituals Guide</a></li>
+          <li><a href="#">Sustainability</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Help</div>
+        <ul class="footer-links">
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 CommonBath. All rights reserved.</div>
+      <div class="footer-socials">
+        <a href="#">Instagram</a>
+        <a href="#">TikTok</a>
+        <a href="#">Pinterest</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx - 5 + 'px';
+      cursor.style.top = my - 5 + 'px';
+    });
+    (function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx - 18 + 'px';
+      ring.style.top = ry - 18 + 'px';
+      requestAnimationFrame(animRing);
+    })();
+
+    // Nav color switch based on section bg
+    const nav = document.getElementById('mainNav');
+    const darkSections = document.querySelectorAll('.philosophy, .ritual, .testimonials');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting && e.intersectionRatio > 0.3) {
+          nav.className = 'dark';
+        } else {
+          // check if any dark section is still mostly visible
+          let anyDark = false;
+          darkSections.forEach(s => {
+            const r = s.getBoundingClientRect();
+            if (r.top < 80 && r.bottom > 80) anyDark = true;
+          });
+          nav.className = anyDark ? 'dark' : 'light';
+        }
+      });
+    }, { threshold: 0.3 });
+    darkSections.forEach(s => observer.observe(s));
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(r => revealObs.observe(r));
+  </script>
+</body>
+</html>
